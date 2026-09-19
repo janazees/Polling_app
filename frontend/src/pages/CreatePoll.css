@@ -1,11 +1,13 @@
 .create-poll-page {
   min-height: 100vh;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .create-poll-content {
   min-height: calc(100vh - 80px);
+  position: relative;
+  z-index: 10;
 
   display: flex;
   justify-content: center;
