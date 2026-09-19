@@ -19,13 +19,13 @@ A full-stack real-time application that allows users to create polls, share them
 - Shareable poll links
 - Audience voting without requiring an account
 - Real-time vote count updates
-- Redis-powered real-time event handling 
-- WebSockry-based live updates
+- Redis-powered real-time event handling
+- WebSocket-based live updates
 - One vote per browser per poll
-- Server-side Validation
-- Live results with vote counts and percentages 
-- Poll management and deletion
-
+- Server-side validation
+- Live results with vote counts and percentages
+- Poll management, closing, and deletion
+  
 ## Architecture
 
 ![Polling App Architecture](docs/Polling_app_Architecture.png)
