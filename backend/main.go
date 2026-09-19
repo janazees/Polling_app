@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"log"
 	"net/http"
 
@@ -93,7 +94,13 @@ func main() {
 	// Start the API server.
 	log.Println("Backend running on http://localhost:8080")
 
-	if err := r.Run(":8080"); err != nil {
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		port = "8080"
+	}
+
+	if err := r.Run(":" + port); err != nil {
 		log.Fatal(err)
 	}
 }
