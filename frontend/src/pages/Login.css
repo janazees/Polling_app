@@ -178,3 +178,13 @@
 .login-back {
   display: inline-block;
 }
+
+.login-page {
+  position: relative;
+  isolation: isolate;
+}
+
+.login-page__content {
+  position: relative;
+  z-index: 10;
+}
