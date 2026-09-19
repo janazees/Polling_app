@@ -1,9 +1,11 @@
 package main
 
 import (
-	"os"
 	"log"
 	"net/http"
+	"os"
+	"strings"
+	"time"
 
 	"polling-app/backend/database"
 	"polling-app/backend/handlers"
@@ -14,6 +16,29 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
+
+// allowedOrigins returns the list of frontend origins allowed to call this API.
+// Set ALLOWED_ORIGINS (comma-separated) in your hosting environment to override.
+func allowedOrigins() []string {
+	defaults := []string{
+		"http://localhost:5173",
+		"http://127.0.0.1:5173",
+		"https://polling-app-amber-omega.vercel.app",
+	}
+
+	extra := os.Getenv("ALLOWED_ORIGINS")
+	if extra == "" {
+		return defaults
+	}
+
+	for _, origin := range strings.Split(extra, ",") {
+		origin = strings.TrimSpace(origin)
+		if origin != "" {
+			defaults = append(defaults, origin)
+		}
+	}
+	return defaults
+}
 
 func main() {
 
@@ -59,15 +84,19 @@ func main() {
 	// Create Gin router.
 	r := gin.Default()
 
+	origins := allowedOrigins()
+
 	// Allow the React frontend to communicate with the Go backend.
 	r.Use(cors.New(cors.Config{
-		AllowOrigins: []string{
-			"http://localhost:5173",
-			"https://polling-app-amber-omega.vercel.app",
+		AllowOrigins: origins,
+		// Also allow Vercel preview deployments (e.g. polling-app-git-main-xyz.vercel.app).
+		AllowOriginFunc: func(origin string) bool {
+			return strings.HasSuffix(origin, ".vercel.app") && strings.HasPrefix(origin, "https://polling-app")
 		},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
 	}))
 
 	// Health-check endpoint.
@@ -94,15 +123,16 @@ func main() {
 		})
 	})
 
-	// Start the API server.
-	log.Println("Backend running on http://localhost:8080")
-
+	// Hosting platforms (Render, Railway, Fly) provide PORT.
 	port := os.Getenv("PORT")
-
 	if port == "" {
 		port = "8080"
 	}
 
+	log.Println("Backend running on port " + port)
+	log.Println("Allowed origins:", origins)
+
+	// Start the API server.
 	if err := r.Run(":" + port); err != nil {
 		log.Fatal(err)
 	}
