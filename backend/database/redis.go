@@ -3,14 +3,25 @@ package database
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/redis/go-redis/v9"
 )
 
 func ConnectRedis() (*redis.Client, error) {
-	client := redis.NewClient(&redis.Options{
-		Addr: "localhost:6379",
-	})
+
+	redisURL := os.Getenv("REDIS_URL")
+
+	if redisURL == "" {
+		return nil, fmt.Errorf("REDIS_URL is not set")
+	}
+
+	options, err := redis.ParseURL(redisURL)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse Redis URL: %w", err)
+	}
+
+	client := redis.NewClient(options)
 
 	ctx := context.Background()
 
