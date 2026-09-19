@@ -1,0 +1,160 @@
+.signup-page {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.signup-page__content {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.signup-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 42px;
+
+  border-radius: 28px;
+
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+}
+
+.signup-card__header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.signup-card__header h1 {
+  margin: 0 0 10px;
+  font-size: 40px;
+  font-weight: 700;
+}
+
+.signup-card__header p {
+  margin: 0;
+  opacity: 0.7;
+  font-size: 15px;
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.signup-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.signup-field label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.signup-field input {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 15px 17px;
+
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+
+  background: rgba(255, 255, 255, 0.25);
+  color: inherit;
+
+  outline: none;
+  font-size: 15px;
+}
+
+.signup-field input:focus {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: #695849;
+
+  box-shadow:
+    0 0 0 3px rgba(129, 120, 255, 0.15);
+}
+
+.signup-button {
+  width: 100%;
+  margin-top: 5px;
+
+  padding: 15px;
+
+  border: none;
+  border-radius: 14px;
+
+  background: #695849;
+  color: white;
+
+  font-size: 16px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: transform 0.2s ease;
+}
+
+.signup-button:hover {
+  transform: translateY(-2px);
+}
+
+.signup-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.signup-error {
+  margin: 0;
+
+  font-size: 13px;
+  text-align: center;
+
+  color: #695849;
+}
+
+.signup-success {
+  margin: 0;
+
+  font-size: 13px;
+  text-align: center;
+
+  color: #4caf50;
+}
+
+.signup-footer {
+  margin-top: 28px;
+
+  text-align: center;
+  font-size: 14px;
+}
+
+.signup-footer p {
+  margin: 0 0 16px;
+  opacity: 0.75;
+}
+
+.signup-footer a {
+  color: #695849;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.signup-footer a:hover {
+  text-decoration: underline;
+}
+
+.signup-back {
+  display: inline-block;
+}

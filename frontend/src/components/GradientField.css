@@ -1,0 +1,50 @@
+.gradient-field {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.gradient-field__wash {
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(38% 42% at 18% 28%, var(--color-butter) 0%, transparent 68%),
+    radial-gradient(46% 50% at 78% 18%, var(--color-sage) 0%, transparent 70%),
+    radial-gradient(55% 60% at 60% 85%, var(--color-umber) 0%, transparent 72%);
+  opacity: 0.55;
+  filter: blur(6px);
+  animation: gradient-drift 22s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes gradient-drift {
+  0% {
+    transform: translate(-2%, -2%) scale(1);
+  }
+  50% {
+    transform: translate(3%, 2%) scale(1.08);
+  }
+  100% {
+    transform: translate(-3%, 3%) scale(1.02);
+  }
+}
+
+/* Graph-paper grid, two scales layered for a fine/major line effect */
+.gradient-field__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--color-line-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-line-soft) 1px, transparent 1px),
+    linear-gradient(var(--color-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-line) 1px, transparent 1px);
+  background-size: 16px 16px, 16px 16px, 96px 96px, 96px 96px;
+  mask-image: linear-gradient(to bottom, black 55%, transparent 96%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gradient-field__wash {
+    animation: none;
+  }
+}

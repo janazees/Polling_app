@@ -1,0 +1,99 @@
+package main
+
+import (
+	"log"
+	"net/http"
+
+	"polling-app/backend/database"
+	"polling-app/backend/handlers"
+	"polling-app/backend/middleware"
+	"polling-app/backend/realtime"
+	"polling-app/backend/routes"
+
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+)
+
+func main() {
+
+	// Connect to MongoDB when the server starts.
+	client, err := database.ConnectMongoDB()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("MongoDB connected successfully")
+
+	// Connect to Redis when the server starts.
+	redisClient, err := database.ConnectRedis()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("Redis connected successfully")
+
+	// Select the database used by the polling application.
+	db := client.Database("polling_app")
+
+	// Get the collections.
+	userCollection := db.Collection("users")
+	pollCollection := db.Collection("polls")
+	voteCollection := db.Collection("votes")
+
+	realtimeManager := realtime.NewManager()
+
+	// Create the authentication handler.
+	authHandler := &handlers.AuthHandler{
+		UserCollection: userCollection,
+	}
+
+	// Create the poll handler.
+	pollHandler := &handlers.PollHandler{
+		PollCollection:  pollCollection,
+		VoteCollection:  voteCollection,
+		RedisClient:     redisClient,
+		RealtimeManager: realtimeManager,
+	}
+
+	// Create Gin router.
+	r := gin.Default()
+
+	// Allow the React frontend to communicate with the Go backend.
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		AllowCredentials: true,
+	}))
+
+	// Health-check endpoint.
+	r.GET("/api/health", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"status":  "ok",
+			"message": "Polling backend is running",
+		})
+	})
+
+	// Register authentication routes.
+	routes.SetupAuthRoutes(r, authHandler)
+
+	// Register poll routes.
+	routes.SetupPollRoutes(r, pollHandler)
+
+	// Protected test route.
+	protected := r.Group("/api/protected")
+	protected.Use(middleware.AuthMiddleware())
+
+	protected.GET("/test", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "You are authenticated!",
+		})
+	})
+
+	// Start the API server.
+	log.Println("Backend running on http://localhost:8080")
+
+	if err := r.Run(":8080"); err != nil {
+		log.Fatal(err)
+	}
+}

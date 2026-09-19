@@ -1,0 +1,109 @@
+.home {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-cream);
+}
+
+.home__hero {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
+  align-items: center;
+  gap: 3rem;
+  padding-block: 4rem;
+}
+
+.home__copy {
+  max-width: 620px;
+}
+
+.home__heading {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.5rem, 5.2vw, 4rem);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  color: var(--color-ink);
+  max-width: 11ch;
+}
+
+.home__subheading {
+  margin-top: 1.5rem;
+  font-size: 1.15rem;
+  line-height: 1.55;
+  color: var(--color-ink-soft);
+  max-width: 46ch;
+}
+
+.home__actions {
+  display: flex;
+  gap: 0.9rem;
+  margin-top: 2.25rem;
+}
+
+.home__hint {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: var(--color-ink-soft);
+}
+
+.home__visual {
+  display: flex;
+  justify-content: center;
+}
+
+/* Button system — used across the whole app, defined once */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.85rem 1.6rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn--primary {
+  background: var(--color-ink);
+  color: var(--color-on-dark);
+}
+
+.btn--primary:hover {
+  background: #34281c;
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--color-ink);
+  border-color: var(--color-ink);
+}
+
+.btn--ghost:hover {
+  background: rgba(36, 27, 20, 0.06);
+}
+
+@media (max-width: 860px) {
+  .home__hero {
+    grid-template-columns: 1fr;
+    padding-block: 2.75rem;
+  }
+
+  .home__visual {
+    order: -1;
+  }
+
+  .home__heading {
+    max-width: none;
+  }
+}
