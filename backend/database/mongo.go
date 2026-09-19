@@ -13,11 +13,9 @@ import (
 
 func ConnectMongoDB() (*mongo.Client, error) {
 
-	// Load environment variables from the .env file.
-	err := godotenv.Load()
-	if err != nil {
-		return nil, fmt.Errorf("error loading .env file: %w", err)
-	}
+	// Load environment variables from the .env file if it exists.
+	// In production, environment variables are provided by the hosting platform.
+	_ = godotenv.Load()
 
 	// Get the MongoDB connection string from the environment.
 	uri := os.Getenv("MONGODB_URI")
