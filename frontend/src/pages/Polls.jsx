@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import GradientField from "../components/GradientField";
+import API_URL from "../api";
 import "./Polls.css";
 
 export default function Polls() {
@@ -22,7 +23,7 @@ export default function Polls() {
 
       try {
         const response = await fetch(
-          "http://localhost:8080/api/polls",
+          `${API_URL}/api/polls`,
           {
             method: "GET",
             headers: {
@@ -61,10 +62,6 @@ export default function Polls() {
     loadPolls();
   }, [navigate]);
 
-  // -----------------------------------------
-  // DELETE POLL
-  // -----------------------------------------
-
   async function deletePoll(shareCode) {
     const confirmed = window.confirm(
       "Are you sure you want to delete this poll?"
@@ -83,7 +80,7 @@ export default function Polls() {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/polls/${shareCode}`,
+        `${API_URL}/api/polls/${shareCode}`,
         {
           method: "DELETE",
           headers: {
@@ -112,7 +109,6 @@ export default function Polls() {
         );
       }
 
-      // Remove the deleted poll from the screen
       setPolls((currentPolls) =>
         currentPolls.filter(
           (poll) => poll.shareCode !== shareCode
@@ -124,10 +120,6 @@ export default function Polls() {
       alert(err.message);
     }
   }
-
-  // -----------------------------------------
-  // COPY POLL LINK
-  // -----------------------------------------
 
   async function copyPollLink(shareCode) {
     const pollLink =
@@ -146,64 +138,64 @@ export default function Polls() {
   }
 
   async function closePoll(shareCode) {
-  const confirmed = window.confirm(
-    "Are you sure you want to close voting for this poll?"
-  );
-
-  if (!confirmed) {
-    return;
-  }
-
-  const token = localStorage.getItem("token");
-
-  if (!token) {
-    navigate("/login");
-    return;
-  }
-
-  try {
-    const response = await fetch(
-      `http://localhost:8080/api/polls/${shareCode}/close`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      }
+    const confirmed = window.confirm(
+      "Are you sure you want to close voting for this poll?"
     );
 
-    const text = await response.text();
+    if (!confirmed) {
+      return;
+    }
 
-    let data = {};
+    const token = localStorage.getItem("token");
 
-    if (text) {
-      try {
-        data = JSON.parse(text);
-      } catch {
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${API_URL}/api/polls/${shareCode}/close`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+
+      const text = await response.text();
+
+      let data = {};
+
+      if (text) {
+        try {
+          data = JSON.parse(text);
+        } catch {
+          throw new Error(
+            "Backend returned an invalid response."
+          );
+        }
+      }
+
+      if (!response.ok) {
         throw new Error(
-          "Backend returned an invalid response."
+          data.error || "Failed to close poll."
         );
       }
-    }
 
-    if (!response.ok) {
-      throw new Error(
-        data.error || "Failed to close poll."
+      setPolls((currentPolls) =>
+        currentPolls.map((poll) =>
+          poll.shareCode === shareCode
+            ? { ...poll, isClosed: true }
+            : poll
+        )
       );
+    } catch (err) {
+      console.error("Close poll error:", err);
+      alert(err.message);
     }
-
-    setPolls((currentPolls) =>
-      currentPolls.map((poll) =>
-        poll.shareCode === shareCode
-          ? { ...poll, isClosed: true }
-          : poll
-      )
-    );
-  } catch (err) {
-    console.error("Close poll error:", err);
-    alert(err.message);
   }
-}
 
   return (
     <div className="polls-page">

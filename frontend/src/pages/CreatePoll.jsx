@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import GradientField from "../components/GradientField";
+import API_URL from "../api";
 import "./CreatePoll.css";
 
 export default function CreatePoll() {
@@ -16,7 +17,6 @@ export default function CreatePoll() {
   const [createdPoll, setCreatedPoll] = useState(null);
   const [copied, setCopied] = useState(false);
 
-  // Check authentication when the page opens
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -65,7 +65,7 @@ export default function CreatePoll() {
 
     try {
       const response = await fetch(
-        "http://localhost:8080/api/polls",
+        `${API_URL}/api/polls`,
         {
           method: "POST",
           headers: {
@@ -96,8 +96,6 @@ export default function CreatePoll() {
 
       console.log("Poll created:", data);
 
-      // Store the created poll so we can show
-      // the share screen.
       setCreatedPoll(data.poll);
 
     } catch (err) {
@@ -143,7 +141,6 @@ export default function CreatePoll() {
     navigate(`/poll/${createdPoll.shareCode}`);
   }
 
-  // Share screen
   if (createdPoll) {
     const pollLink =
       `${window.location.origin}/poll/` +

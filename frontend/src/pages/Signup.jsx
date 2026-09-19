@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import GradientField from "../components/GradientField";
+import API_URL from "../api";
 import "./Signup.css";
 
 export default function Signup() {
@@ -30,7 +31,7 @@ export default function Signup() {
 
     try {
       const response = await fetch(
-        "http://localhost:8080/api/auth/signup",
+        `${API_URL}/api/auth/signup`,
         {
           method: "POST",
           headers: {

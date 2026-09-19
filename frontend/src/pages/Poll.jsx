@@ -1,6 +1,8 @@
+
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Header from "../components/Header";
+import API_URL from "../api";
 import GradientField from "../components/GradientField";
 import "./Poll.css";
 
@@ -37,7 +39,7 @@ export default function Poll() {
     async function fetchPoll() {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/polls/${pollId}`
+          `${API_URL}/api/polls/${pollId}`
         );
 
         const data = await response.json();
@@ -72,7 +74,7 @@ export default function Poll() {
     }
 
     const socket = new WebSocket(
-      `ws://localhost:8080/api/polls/${pollId}/ws`
+      `${API_URL.replace(/^http/, "ws")}/api/polls/${pollId}/ws`
     );
 
     socket.onopen = () => {
@@ -129,7 +131,7 @@ export default function Poll() {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/polls/${pollId}/vote`,
+        `${API_URL}/api/polls/${pollId}/vote`,
         {
           method: "POST",
           headers: {
