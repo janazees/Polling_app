@@ -56,7 +56,7 @@ Prerequistes
 - Node.js
 - Go
 - MongoDB Atlas
-- Redis
+- A Redis instance (local, or a free Upstash database)
 
 1. Clone the Repository 
 
@@ -68,24 +68,23 @@ Create a .env file inside the backend directory:
 
 MONGODB_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
+REDIS_URL=redis://localhost:6379
 
-Make sure Redis is running locally on:
-
-localhost:6379
+For a hosted Redis such as Upstash, use its full URL instead (rediss://default:<password>@<host>:6379).
 
 3. Start the backend 
 
 cd backend
 go run main.go
-
 The backend runs on:
 
 http://localhost:8080
+Also check at: http://localhost:8080/api/health
 
 4. Start the frontend
 
-Open another terminal:
-
+Create frontend/.env:
+VITE_API_URL=http://localhost:8080
 cd frontend
 npm install
 npm run dev
@@ -93,6 +92,22 @@ npm run dev
 The frontend runs on:
 
 http://localhost:5173
+
+## Deployment
+
+Backend (Render)
+
+Root directory: backend
+Build command: go build -o app .
+Start command: ./app
+Environment variables: MONGODB_URI, JWT_SECRET, REDIS_URL, ALLOWED_ORIGINS (optional, comma-separated extra frontend origins)
+MongoDB Atlas must allow the host's IP (Network Access).
+
+Frontend (Vercel)
+
+Root directory: frontend
+Environment variable: VITE_API_URL set to the deployed backend URL (no trailing slash)
+Redeploy after changing environment variables, since Vite reads them at build time.
 
 ## Project Overview 
 
